@@ -1,0 +1,68 @@
+#DEPENDENCIES (FRONTEND + BACKEND)
+node_modules/
+
+#ENV FILES
+.env
+.env.*
+backend/.env
+frontend/.env
+!.env.example
+
+#LOGS
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+#BUILD OUTPUTS
+dist/
+build/
+backend/dist/
+frontend/dist/
+dist-ssr/
+
+#CACHE / TEMP
+.cache/
+.tmp/
+.temp/
+.vite/
+
+#TEST COVERAGE
+coverage/
+
+#BACKEND SPECIFIC
+backend/node_modules/
+
+#FRONTEND SPECIFIC (VITE / REACT)
+frontend/node_modules/
+frontend/.vite/
+
+#UPLOADS / FILE STORAGE
+backend/uploads/
+backend/files/
+backend/storage/
+
+#DATABASE LOCAL FILES
+*.sqlite
+*.sqlite3
+*.db
+
+#EDITOR / IDE
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+
+#OS FILES
+.DS_Store
+Thumbs.db
+
+#MISC
+*.tsbuildinfo
