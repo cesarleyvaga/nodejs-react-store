@@ -40,7 +40,9 @@ const patchProduct = async (req, res, next) => {
   try {
     const data = await productService.patchProduct(req.params.id, req.body);
     res.status(201).json(data);
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 };
 
 const deleteProduct = async (req, res, next) => {
