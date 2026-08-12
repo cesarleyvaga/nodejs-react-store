@@ -21,11 +21,11 @@ const createProduct = async (data) => {
   }
 
   if (!data.price) {
-    throw new AppError("The price is mandatory");
+    throw new AppError("The price is mandatory", 400);
   }
 
   if (!data.stock) {
-    throw new AppError("The stock is mandatory");
+    throw new AppError("The stock is mandatory", 400);
   }
 
   return await productModel.create(data);
