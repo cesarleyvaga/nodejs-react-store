@@ -36,6 +36,13 @@ const updateProduct = async (req, res, next) => {
   }
 };
 
+const patchProduct = async (req, res, next) => {
+  try {
+    const data = await productService.patchProduct(req.params.id, req.body);
+    res.status(201).json(data);
+  } catch (error) {}
+};
+
 const deleteProduct = async (req, res, next) => {
   try {
     const data = await productService.deleteProduct(req.params.id);
@@ -50,5 +57,6 @@ module.exports = {
   getProductById,
   createProduct,
   updateProduct,
+  patchProduct,
   deleteProduct,
 };

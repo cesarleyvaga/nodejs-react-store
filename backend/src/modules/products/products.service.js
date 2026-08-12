@@ -32,6 +32,32 @@ const createProduct = async (data) => {
 };
 
 const updateProduct = async (id, data) => {
+  const existingProduct = await productModel.getProductById();
+
+  if (!existingProduct) {
+    throw new AppError("Product not found", 404);
+  }
+
+  if (data.name === undefined) {
+    throw new AppError("The name is mandatory", 400);
+  }
+
+  if (data.price === undefined) {
+    throw new AppError("The price is mandatory", 400);
+  }
+
+  if (data.stock === undefined) {
+    throw new AppError("The stock is mandatory", 400);
+  }
+
+  return await productModel.update(id, {
+    name: data.name,
+    price: data.price,
+    stock: data.stock,
+  });
+};
+
+const patchProduct = async (id, data) => {
   const existingProduct = await productModel.getById(id);
 
   if (!existingProduct) {
