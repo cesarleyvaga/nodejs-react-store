@@ -32,7 +32,7 @@ const createProduct = async (data) => {
 };
 
 const updateProduct = async (id, data) => {
-  const existingProduct = await productModel.getProductById();
+  const existingProduct = await productModel.getById(id);
 
   if (!existingProduct) {
     throw new AppError("Product not found", 404);
