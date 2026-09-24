@@ -2,8 +2,8 @@ const userModel = require("./users.model");
 const AppError = require("../../errors/AppError");
 const bcrypt = require("bcrypt");
 
-const getAllUsers = () => {
-  return userModel.getAll();
+const getAllUsers = async () => {
+  return await userModel.getAll();
 };
 
 const getUserById = async (id) => {
@@ -14,6 +14,16 @@ const getUserById = async (id) => {
   }
 
   return user;
+};
+
+const getPasswordHash = async (id) => {
+  const userPasswordHash = await userModel.getPasswordHash(id);
+
+  if (!userPasswordHash) {
+    throw new AppError("User not found", 404);
+  }
+
+  return userPasswordHash;
 };
 
 const createUser = async (data) => {
@@ -33,6 +43,20 @@ const createUser = async (data) => {
     throw new AppError("The password is mandatory", 400);
   }
 
+  if (!data.phone_number?.trim()) {
+    throw new AppError("The phone number is mandatory", 400);
+  }
+
+  if (!data.username?.trim()) {
+    throw new AppError("The username is mandatory", 400);
+  }
+
+  const email = await userModel.getEmail(data.email);
+
+  if (email) {
+    throw new AppError("The email has been regitered, enter a new one", 400);
+  }
+
   const password_hash = await bcrypt.hash(data.password, 10);
 
   const dataUser = {
@@ -40,6 +64,8 @@ const createUser = async (data) => {
     last_name: data.last_name,
     email: data.email,
     password_hash,
+    phone_number: data.phone_number,
+    username: data.username,
   };
 
   return userModel.create(dataUser);
@@ -68,6 +94,14 @@ const updateUser = async (id, data) => {
     throw new AppError("The password is mandatory", 400);
   }
 
+  if (!data.phone_number?.trim()) {
+    throw new AppError("The phone_number is mandatory", 400);
+  }
+
+  if (!data.username?.trim()) {
+    throw new AppError("The username is mandatory", 400);
+  }
+
   const password_hash = await bcrypt.hash(data.password, 10);
 
   const dataUser = {
@@ -75,6 +109,8 @@ const updateUser = async (id, data) => {
     last_name: data.last_name,
     email: data.email,
     password_hash,
+    phone_number: data.phone_number,
+    username: data.username,
   };
 
   return userModel.update(id, dataUser);
@@ -86,6 +122,8 @@ const patchUser = async (id, data) => {
   if (!user) {
     throw new AppError("User not found", 404);
   }
+
+  const userPasswordHash = await userModel.getPasswordHash(id);
 
   if (data.first_name !== undefined && !data.first_name.trim()) {
     throw new AppError("The first name cannot be empty", 400);
@@ -103,7 +141,15 @@ const patchUser = async (id, data) => {
     throw new AppError("The password cannot be empty", 400);
   }
 
-  let password_hash = user.password_hash;
+  if (data.phone_number !== undefined && !data.phone_number.trim()) {
+    throw new AppError("The phone number is mandatory", 400);
+  }
+
+  if (data.username !== undefined && !data.username.trim()) {
+    throw new AppError("The username is mandatory", 400);
+  }
+
+  let password_hash = userPasswordHash.password_hash;
 
   if (data.password !== undefined) {
     password_hash = await bcrypt.hash(data.password, 10);
@@ -114,6 +160,8 @@ const patchUser = async (id, data) => {
     last_name: data.last_name ?? user.last_name,
     email: data.email ?? user.email,
     password_hash,
+    phone_number: data.phone_number ?? user.phone_number,
+    username: data.username ?? user.username,
   };
 
   return userModel.update(id, dataUser);
@@ -132,6 +180,7 @@ const removeUser = async (id) => {
 module.exports = {
   getAllUsers,
   getUserById,
+  getPasswordHash,
   createUser,
   updateUser,
   patchUser,
