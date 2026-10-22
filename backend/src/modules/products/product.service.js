@@ -24,8 +24,16 @@ const createProduct = async (data) => {
     throw new AppError("The price is mandatory", 400);
   }
 
+  if (!data.currency_code) {
+    throw new AppError("The currency code is mandatory", 400);
+  }
+
   if (!data.stock) {
     throw new AppError("The stock is mandatory", 400);
+  }
+
+  if (!data.sku) {
+    throw new AppError("The sku is mandatory", 400);
   }
 
   return await productModel.create(data);
@@ -46,14 +54,29 @@ const updateProduct = async (id, data) => {
     throw new AppError("The price is mandatory", 400);
   }
 
+  if (data.currency_code === undefined) {
+    throw new AppError("The currency code is mandatory", 400);
+  }
+
   if (data.stock === undefined) {
     throw new AppError("The stock is mandatory", 400);
+  }
+
+  if (data.sku === undefined) {
+    throw new AppError("The sku is mandatory", 400);
+  }
+
+  if (data.active === undefined) {
+    throw new AppError("The active is mandatory", 400);
   }
 
   return await productModel.update(id, {
     name: data.name,
     price: data.price,
+    currency_code: data.currency_code,
     stock: data.stock,
+    sku: data.sku,
+    active: data.active,
   });
 };
 
@@ -67,7 +90,10 @@ const patchProduct = async (id, data) => {
   const updatedData = {
     name: data.name ?? existingProduct.name,
     price: data.price ?? existingProduct.price,
+    currency_code: data.currency_code ?? existingProduct.currency_code,
     stock: data.stock ?? existingProduct.stock,
+    sku: data.sku ?? existingProduct.sku,
+    active: data.active ?? existingProduct.active,
   };
 
   return await productModel.update(id, updatedData);
