@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const productRoutes = require("./modules/products/products.index");
+const productRoutes = require("./modules/products/product.index");
 const userRoutes = require("./modules/users/user.index");
 const cartRoutes = require("./modules/carts/cart.index");
 const errorMiddleware = require("./middlewares/error.middleware");
