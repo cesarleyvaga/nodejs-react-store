@@ -2,14 +2,14 @@ const pool = require("../../config/db");
 
 const getAll = async () => {
   const result = await pool.query(
-    "SELECT id, first_name, last_name, email, phone_number, username FROM users ORDER BY last_name ASC",
+    "SELECT id, first_name, last_name, email, phone_number, username, created_at, updated_at FROM users ORDER BY last_name ASC",
   );
   return result.rows;
 };
 
 const getById = async (id) => {
   const result = await pool.query(
-    "SELECT id, first_name, last_name, email, phone_number, username FROM users WHERE id = $1",
+    "SELECT id, first_name, last_name, email, phone_number, username, created_at, updated_at FROM users WHERE id = $1",
     [id],
   );
   return result.rows[0];
@@ -39,7 +39,10 @@ const create = async ({
   username,
 }) => {
   const result = await pool.query(
-    "INSERT INTO users (first_name, last_name, email, password_hash, phone_number, username) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, first_name, last_name, email, phone_number, username",
+    `
+    INSERT INTO users (first_name, last_name, email, password_hash, phone_number, username)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING id, first_name, last_name, email, phone_number, username, created_at, updated_at`,
     [first_name, last_name, email, password_hash, phone_number, username],
   );
   return result.rows[0];
@@ -50,7 +53,10 @@ const update = async (
   { first_name, last_name, email, password_hash, phone_number, username },
 ) => {
   const result = await pool.query(
-    "UPDATE users SET first_name = $2, last_name = $3, email = $4, password_hash = $5, phone_number = $6, username = $7 WHERE id = $1 RETURNING id, first_name, last_name, email, phone_number, username",
+    `
+    UPDATE users
+    SET first_name = $2, last_name = $3, email = $4, password_hash = $5, phone_number = $6, username = $7 WHERE id = $1
+    RETURNING id, first_name, last_name, email, phone_number, username, created_at, updated_at`,
     [id, first_name, last_name, email, password_hash, phone_number, username],
   );
   return result.rows[0];
@@ -58,7 +64,7 @@ const update = async (
 
 const remove = async (id) => {
   const result = await pool.query(
-    "DELETE FROM users WHERE id = $1 RETURNING id, first_name, last_name, email, phone_number, username",
+    "DELETE FROM users WHERE id = $1 RETURNING id, first_name, last_name, email, phone_number, username, created_at, updated_at",
     [id],
   );
   return result.rows[0];
